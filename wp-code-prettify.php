@@ -82,7 +82,7 @@ function WPCP_Head($content) {
 	if($wp_code_prettify['load_pos'] == 'head') {
 
 		$plugin_path = site_url('/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ));
-		wp_enqueue_script('prettify_js',$plugin_path . '/js/prettify.js', );
+		wp_enqueue_script('prettify_js', $plugin_path . '/js/prettify.js');
 		wp_enqueue_style('prettify_css', $plugin_path . '/css/' . $wp_code_prettify['style_file'], false);
 		?>
 
