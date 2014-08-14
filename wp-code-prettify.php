@@ -82,15 +82,15 @@ function WPCP_Head($content) {
 	if($wp_code_prettify['load_pos'] == 'head') {
 
 		$plugin_path = site_url('/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ));
+		wp_enqueue_script('prettify_js',$plugin_path . '/js/prettify.js', );
+		wp_enqueue_style('prettify_css', $plugin_path . '/css/' . $wp_code_prettify['style_file'], false);
 		?>
 
 		<!--wp code prettify-->
-		<link id="prettify_css" href="<?php echo $plugin_path . '/css/' . $wp_code_prettify['style_file']; ?>" type="text/css" rel="stylesheet" />
 		<?php if($this->is_str_and_not_empty($wp_code_prettify['style_custom'])) { ?>
 		<style type="text/css" id="prettify_custom"><?php echo stripslashes($wp_code_prettify['style_custom']); ?></style>
 		<?php } ?>
 
-		<script type="text/javascript" src="<?php echo $plugin_path . '/js/prettify.js'; ?>"></script>
 		<script type="text/javascript">
 			function wpCodePrettifyOnLoad(func){
 				var wpCodePrettifyOldOnLoad = window.onload;
