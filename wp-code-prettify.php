@@ -81,9 +81,6 @@ function WPCP_Head($content) {
 
 	if($wp_code_prettify['load_pos'] == 'head') {
 
-		$plugin_path = site_url('/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ));
-		wp_enqueue_script('prettify_js', $plugin_path . '/js/prettify.js');
-		wp_enqueue_style('prettify_css', $plugin_path . '/css/' . $wp_code_prettify['style_file'], false);
 		?>
 
 		<!--wp code prettify-->
@@ -216,6 +213,14 @@ function DeactivatePlugin() {
 	delete_option("wp_code_prettify");
 }
 
+function WPCP_init() {
+	$wp_code_prettify = maybe_unserialize(get_option('wp_code_prettify'));
+	if($wp_code_prettify['load_pos'] == 'head') {
+		wp_enqueue_script('prettify_js', plugins_url('/js/prettify.js', __FILE__));
+		wp_enqueue_style('prettify_css', plugins_url('/css/'.$wp_code_prettify['style_file'], __FILE__));
+	}
+}
+
 } // end of class WPCodePrettify
 } // end of if(!class_exists('WPCodePrettify'))
 
@@ -233,12 +238,15 @@ if(class_exists('WPCodePrettify')) {
 		add_filter('plugin_row_meta', array(&$wpcodeprettify, 'RegisterPluginLinks'),10,2);
 
 		//Add the actions
+		add_action('init', array(&$wpcodeprettify, 'WPCP_init'));
 		add_action('wp_head', array(&$wpcodeprettify, 'WPCP_Head'));
 		add_action('get_footer', array(&$wpcodeprettify, 'WPCP_Footer'));
 
 		//Add the filters
 		add_filter('the_content', array(&$wpcodeprettify, 'WPCP_Content'));
 		add_filter('comment_text', array(&$wpcodeprettify, 'WPCP_Content'));
+
+		
 	}
 }
 
