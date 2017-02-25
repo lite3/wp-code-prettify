@@ -150,7 +150,12 @@ function WPCodePrettify_Options_Page() {
 		</tr>
 		<tr>
 		<th scope="row"><?php _e('You can add custom HTML into head section.', 'wp-code-prettify'); ?></th>
-		<td colspan="2"><textarea cols="75" rows="5" name="head_custom"><?php echo stripslashes($wp_code_prettify['head_custom']); ?></textarea></td>
+		<td colspan="2"><textarea cols="75" rows="5" name="head_custom">
+		<?php 
+			if (!empty($wp_code_prettify['head_custom'])) {
+				echo stripslashes($wp_code_prettify['head_custom']);
+			}
+		?></textarea></td>
 		</tr>
 	</table>
 
