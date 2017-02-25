@@ -2,8 +2,8 @@
 Contributors: Soli
 Tags: wordpress, google, code, prettify, highlight, highlighter, syntax, snippet, formatting, color, js, javascript
 Requires at least: 3.0
-Tested up to: 3.9.1
-Stable tag: 0.2.2
+Tested up to: 4.5.2
+Stable tag: 0.2.6
 
 This plugin enable syntax highlighting of code snippets in your post using Google Code Prettify.
 
@@ -35,6 +35,21 @@ This plugin enable syntax highlighting of code snippets in your post using Googl
 1. The settings menu
 
 == Changelog ==
+
+= 0.2.7 =
+* fix security issues;
+
+= 0.2.6 =
+* fix "undefined index: head_custom";
+
+= 0.2.5 =
+* custom HTML can be add into \<head\>, so you can include some js files, such as lang-matlab.js; 
+* using plugins_url() instead of content_url();
+* Tested up to: 4.4
+
+= 0.2.4 =
+* fix "Strict Standards" error ( Thanks bassjobsen <https://wordpress.org/support/profile/bassjobsen>);
+* Tested up to: 4.0
 
 = 0.2.3 =
 * fix js conflict with other plugins (Thanks the_champ <http://wordpress.org/support/profile/the_champ>)

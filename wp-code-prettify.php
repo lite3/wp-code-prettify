@@ -3,7 +3,7 @@
 Plugin Name: WP Code Prettify
 Plugin URI: http://wordpress.org/extend/plugins/wp-code-prettify/
 Description: This plugin enable syntax highlighting of code snippets in your post using Google Code Prettify.
-Version: 0.2.3
+Version: 0.2.7
 Author: Soli
 Author URI: http://www.cbug.org
 Text Domain: wp-code-prettify
@@ -78,16 +78,21 @@ function WPCP_Head($content) {
 	$this->there_is_some_code = false;
 
 	$wp_code_prettify = maybe_unserialize(get_option('wp_code_prettify'));
+	?>
 
+	<?php
 	if($wp_code_prettify['load_pos'] == 'head') {
 
+		$plugin_path = plugins_url('', __FILE__);
 		?>
 
 		<!--wp code prettify-->
+		<link id="prettify_css" href="<?php echo $plugin_path . '/css/' . $wp_code_prettify['style_file']; ?>" type="text/css" rel="stylesheet" />
 		<?php if($this->is_str_and_not_empty($wp_code_prettify['style_custom'])) { ?>
 		<style type="text/css" id="prettify_custom"><?php echo stripslashes($wp_code_prettify['style_custom']); ?></style>
 		<?php } ?>
 
+		<script type="text/javascript" src="<?php echo $plugin_path . '/js/prettify.js'; ?>"></script>
 		<script type="text/javascript">
 			function wpCodePrettifyOnLoad(func){
 				var wpCodePrettifyOldOnLoad = window.onload;
@@ -107,6 +112,11 @@ function WPCP_Head($content) {
 
 		<?php
 	}
+
+	echo '<!--wp code prettify-->';
+	if(array_key_exists('head_custom', $wp_code_prettify) && $this->is_str_and_not_empty($wp_code_prettify['head_custom'])) {
+		echo stripslashes($wp_code_prettify['head_custom']);
+	}
 }
 
 function WPCP_Footer($content) {
@@ -121,7 +131,7 @@ function WPCP_Footer($content) {
 		return;
 	}
 
-	$plugin_path = site_url('/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ));
+	$plugin_path = plugins_url('', __FILE__);
 	?>
 
 	<!--wp code prettify-->
@@ -190,7 +200,7 @@ function RegisterPluginLinks($links, $file) {
 	$base = plugin_basename(__FILE__);
 	if ($file ==$base) {
 		$links[] = '<a href="options-general.php?page=wp-code-prettify">' . __('Settings','wp-code-prettify') . '</a>';
-		$links[] = '<a href="http://www.cbug.org/category/wp-code-prettify/">' . __('FAQ','wp-code-prettify') . '</a>';
+		$links[] = '<a href="http://www.cbug.org/tag/wp-code-prettify/">' . __('FAQ','wp-code-prettify') . '</a>';
 	}
 	return $links;
 }
@@ -239,14 +249,12 @@ if(class_exists('WPCodePrettify')) {
 
 		//Add the actions
 		add_action('init', array(&$wpcodeprettify, 'WPCP_init'));
-		add_action('wp_head', array(&$wpcodeprettify, 'WPCP_Head'));
-		add_action('get_footer', array(&$wpcodeprettify, 'WPCP_Footer'));
+		// add_action('wp_head', array(&$wpcodeprettify, 'WPCP_Head'));
+		// add_action('get_footer', array(&$wpcodeprettify, 'WPCP_Footer'));
 
 		//Add the filters
 		add_filter('the_content', array(&$wpcodeprettify, 'WPCP_Content'));
 		add_filter('comment_text', array(&$wpcodeprettify, 'WPCP_Content'));
-
-		
 	}
 }
 
@@ -260,4 +268,4 @@ if(class_exists('WPCodePrettifyPage')) {
 		add_action('admin_menu', array(&$wpcodeprettify_page, 'WPCodePrettify_Menu'), 1);
 	}
 }
-?>
+

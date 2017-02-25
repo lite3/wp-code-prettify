@@ -2,14 +2,18 @@
 /*
 WP Code Prettify Page
 */
+require_once ABSPATH . WPINC . '/pluggable.php';
 
 $wpcp_status = "normal";
 
-if(isset($_POST['wpcp_update_options'])) {
-	if($_POST['wpcp_update_options'] == 'Y') {
-		update_option("wp_code_prettify", maybe_serialize($_POST));
-		$wpcp_status = 'update_success';
-	}
+if (is_array($_POST) && array_key_exists('wpcp_update_options', $_POST) && $_POST['wpcp_update_options'] === 'Y') {
+	check_admin_referer('wpcp_nonce_action', 'wpcp_nonce_field');
+
+	if (!current_user_can('manage_options'))
+		die();
+
+	update_option("wp_code_prettify", maybe_serialize($_POST));
+	$wpcp_status = 'update_success';
 }
 
 if(!class_exists('WPCodePrettifyPage')) {
@@ -87,6 +91,7 @@ function WPCodePrettify_Options_Page() {
 
 	<form method="post" action="<?php echo get_bloginfo("wpurl"); ?>/wp-admin/options-general.php?page=wp-code-prettify">
 	<input type="hidden" name="wpcp_update_options" value="Y">
+	<?php wp_nonce_field('wpcp_nonce_action', 'wpcp_nonce_field'); ?>
 
 	<script type="text/javascript">
 		prettifyOnLoadHead = function() {
@@ -143,6 +148,10 @@ function WPCodePrettify_Options_Page() {
 		<th scope="row"><?php _e('You can add custom css here.', 'wp-code-prettify'); ?></th>
 		<td colspan="2"><textarea cols="75" rows="5" name="style_custom"><?php echo stripslashes($wp_code_prettify['style_custom']); ?></textarea></td>
 		</tr>
+		<tr>
+		<th scope="row"><?php _e('You can add custom HTML into head section.', 'wp-code-prettify'); ?></th>
+		<td colspan="2"><textarea cols="75" rows="5" name="head_custom"><?php echo stripslashes($wp_code_prettify['head_custom']); ?></textarea></td>
+		</tr>
 	</table>
 
 	<p class="submit">
@@ -164,9 +173,9 @@ function WPCodePrettify_Options_Page() {
 }
 
 function WPCodePrettify_Menu() {
-	add_options_page(__('WP Code Prettify'), __('WP Code Prettify'), 'manage_options', 'wp-code-prettify', array(__CLASS__,'WPCodePrettify_Options_Page'));
+	add_options_page(__('WP Code Prettify'), __('WP Code Prettify'), 'manage_options', 'wp-code-prettify', array($this,'WPCodePrettify_Options_Page'));
 }
 
 } // end of class WPCodePrettifyPage
 } // end of if(!class_exists('WPCodePrettifyPage'))
-?>
+
